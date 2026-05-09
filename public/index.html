@@ -334,7 +334,7 @@ canvas{width:100%!important}
     </div>
 
     <!-- REGISTER -->
-    <div class="auth-form auth-form-hidden" id="reg-form">
+    <div class="auth-form" id="reg-form" style="display:none">
       <div class="auth-row">
         <div class="inp-group">
           <label class="inp-label">Username</label>
@@ -865,21 +865,23 @@ async function api(method, path, body){
 //  AUTH
 // ═══════════════════════════════════════════════
 function switchTab(tab){
-  // show auth screen first if hidden
-  const authScreen = document.getElementById('auth-screen');
-  if(authScreen) authScreen.style.display='flex';
+  const loginForm = document.getElementById('login-form');
+  const regForm   = document.getElementById('reg-form');
+  const tabs      = document.querySelectorAll('.auth-tab');
 
-  ['login','register'].forEach(t=>{
-    const el = document.getElementById(t+'-form');
-    if(!el) return;
-    el.classList.remove('auth-form-hidden');
-    el.style.display = t===tab?'flex':'none';
-    const tabs = authScreen ? authScreen.querySelectorAll('.auth-tab') : [];
-    const idx = t==='login'?0:1;
-    if(tabs[idx]) tabs[idx].classList.toggle('active', (t==='login'&&tab==='login')||(t==='register'&&tab==='register'));
-  });
-  const errEl = tab==='login'?document.getElementById('l-err'):document.getElementById('r-err');
-  if(errEl) errEl.textContent='';
+  if(tab === 'login'){
+    loginForm.style.display = 'flex';
+    regForm.style.display   = 'none';
+    tabs[0].classList.add('active');
+    tabs[1].classList.remove('active');
+    document.getElementById('l-err').textContent = '';
+  } else {
+    loginForm.style.display = 'none';
+    regForm.style.display   = 'flex';
+    tabs[0].classList.remove('active');
+    tabs[1].classList.add('active');
+    document.getElementById('r-err').textContent = '';
+  }
 }
 
 async function doLogin(){
